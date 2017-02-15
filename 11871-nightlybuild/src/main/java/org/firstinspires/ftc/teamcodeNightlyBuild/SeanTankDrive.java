@@ -67,7 +67,7 @@ public class SeanTankDrive extends LinearOpMode{
             left = -gamepad1.left_stick_y;
             right = -gamepad1.right_stick_y;
 
-            if(right-.3 >= 0)
+            if(right-.25 >= 0)
                 right -= .25;
             else
                 right += .25;

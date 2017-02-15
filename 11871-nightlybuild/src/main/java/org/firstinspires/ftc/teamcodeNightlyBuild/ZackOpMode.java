@@ -56,8 +56,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class ZackOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
-    //Changed from original HardwarePushbot class in order to preserve original class and still allow additional objects (
-        // such as the arm's servo) to be added
+    //Changed from original HardwarePushbot class in order to preserve original class and still
+        // allow additional objects (such as the arm's servo) to be added
     HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
 
     //  IrSeekerSensor leftDistSense;
@@ -138,7 +138,7 @@ public class ZackOpMode extends LinearOpMode {
             // Trims motor speed in order to improve control
             if(right-.25 >= 0)
                 right -= .25;
-            else if(right+.3 < 0)
+            else if(right+.25 < 0)
                 right += .25;
 
             if(left-.25 >= 0)
