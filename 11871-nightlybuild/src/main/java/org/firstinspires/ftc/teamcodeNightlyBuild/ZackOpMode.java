@@ -103,6 +103,7 @@ public class ZackOpMode extends LinearOpMode {
         double left;
         double right;
         double max;
+        double newArmPos;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -174,23 +175,19 @@ public class ZackOpMode extends LinearOpMode {
             // robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
             //robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
-            // Use gamepad buttons to move arm up (Y) and down (A)
-            if (gamepad1.y)
-                while(gamepad1.y && robot.armServo.getPosition() > 0.0)
-                {
-                    robot.armServo.setPosition(robot.armServo.getPosition()-.005);
-                }
-            else if (gamepad1.a)
-                while(gamepad1.y && robot.armServo.getPosition() < 1.0)
-                {
-                    robot.armServo.setPosition(robot.armServo.getPosition()+.005);
-                }
+            // Use the left stick on controller 2 to move the arm
+
+            if(gamepad2.left_stick_y != 0.0)
+            {
+                newArmPos = robot.armServo.getPosition() + (.01*gamepad2.left_stick_y);
+                robot.armServo.setPosition(newArmPos);
+            }
 
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
-            telemetry.addData("arm_servo", "%.3f", robot.armServo.getPosition());
+            telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.

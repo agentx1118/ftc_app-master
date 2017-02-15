@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 @TeleOp(name="Sean OpMode: Tank Drive (Warning: Experimental)", group="Pushbot")
 //@Disabled
 public class SeanTankDrive extends LinearOpMode{
-    HardwarePushbot robot = new HardwarePushbot();
+    HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();
 
     private void moveForward(double speed)
     {
@@ -52,6 +52,7 @@ public class SeanTankDrive extends LinearOpMode{
         double left;
         double right;
         double max;
+        double newArmPos;
 
         robot.init(hardwareMap);
 
@@ -67,9 +68,9 @@ public class SeanTankDrive extends LinearOpMode{
             right = -gamepad1.right_stick_y;
 
             if(right-.3 >= 0)
-                right -= .3;
+                right -= .25;
             else
-                right += .3;
+                right += .25;
 
             if(left-.25 >= 0)
                 left -= .25;
@@ -87,8 +88,15 @@ public class SeanTankDrive extends LinearOpMode{
             robot.leftMotor.setPower((left));
             robot.rightMotor.setPower((right));
 
+            if(gamepad2.left_stick_y != 0.0)
+            {
+                newArmPos = robot.armServo.getPosition() + (.01*gamepad2.left_stick_y);
+                robot.armServo.setPosition(newArmPos);
+            }
+
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
+            telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
             robot.waitForTick(40);
