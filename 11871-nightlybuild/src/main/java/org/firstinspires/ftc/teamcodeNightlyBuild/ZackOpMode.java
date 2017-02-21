@@ -78,8 +78,8 @@ public class ZackOpMode extends LinearOpMode {
             left = right = 1.0;
         }
 
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower((right-.05));
+        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
     // Move the robot forward at speed
@@ -93,8 +93,8 @@ public class ZackOpMode extends LinearOpMode {
             left = right = -1.0;
         }
 
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower((right+.05));
+        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
 
@@ -133,7 +133,7 @@ public class ZackOpMode extends LinearOpMode {
             right = -gamepad1.left_stick_y - gamepad1.right_stick_x;
 
             // Scales armServo range so it does not exceed the proposed the physical limitations of the bot (Make sure to test ASAP)
-            robot.armServo.scaleRange(0,.8);
+            robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
 
             // Trims motor speed in order to improve control
             if(right-.25 >= 0)
@@ -154,8 +154,8 @@ public class ZackOpMode extends LinearOpMode {
                 right /= max;
             }
 
-            robot.leftMotor.setPower((left));
-            robot.rightMotor.setPower((right));
+            robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+            robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
 
             // Use gamepad left & right Bumpers to open and close the claw
             // if (gamepad1.right_bumper)

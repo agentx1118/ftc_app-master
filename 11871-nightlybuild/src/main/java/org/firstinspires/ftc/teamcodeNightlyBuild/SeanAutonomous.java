@@ -33,7 +33,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class SeanAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private HardwarePushbot robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+    private HardwarePushbot_VoltronConfig robot   = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
 

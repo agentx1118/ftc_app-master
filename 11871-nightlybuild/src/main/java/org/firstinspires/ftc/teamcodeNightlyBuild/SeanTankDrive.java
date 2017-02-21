@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class SeanTankDrive extends LinearOpMode{
     HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();
 
+    // Move the robot forward at speed
     private void moveForward(double speed)
     {
         speed = Math.abs(speed);
@@ -27,10 +28,11 @@ public class SeanTankDrive extends LinearOpMode{
             left = right = 1.0;
         }
 
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower(right-.05);
+        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
+    // Move the robot forward at speed
     private void moveBackward(double speed)
     {
         speed = Math.abs(speed);
@@ -41,8 +43,8 @@ public class SeanTankDrive extends LinearOpMode{
             left = right = -1.0;
         }
 
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower(right+.05);
+        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
 
@@ -85,8 +87,8 @@ public class SeanTankDrive extends LinearOpMode{
                 right /= max;
             }
 
-            robot.leftMotor.setPower((left));
-            robot.rightMotor.setPower((right));
+            robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+            robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
 
             if(gamepad2.left_stick_y != 0.0)
             {
