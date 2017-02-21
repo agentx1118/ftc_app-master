@@ -56,7 +56,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class ZackOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
+    HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
 
   //  IrSeekerSensor leftDistSense;
   //  OpticalDistanceSensor rightDistSense;
@@ -133,6 +133,7 @@ public class ZackOpMode extends LinearOpMode {
         double left;
         double right;
         double max;
+        double newArmPos;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -160,6 +161,9 @@ public class ZackOpMode extends LinearOpMode {
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             left  = ((-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT);
             right = ((-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT);
+
+            // Scales armServo range so it does not exceed the proposed the physical limitations of the bot (Make sure to test ASAP)
+            robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
 
             double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
             double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) : (OpModeConstants.RIGHT_MOTOR_OFFSET);
@@ -193,19 +197,16 @@ public class ZackOpMode extends LinearOpMode {
             // robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
             //robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
-            // Use gamepad buttons to move arm up (Y) and down (A)
-            /*if (gamepad1.y)
-                robot.armMotor.setPower(robot.ARM_UP_POWER);
-            else if (gamepad1.a)
-                robot.armMotor.setPower(robot.ARM_DOWN_POWER);
-            else
-                robot.armMotor.setPower(0.0);
-                */
+            // Use the left stick on controller 2 to move the arm
+            if(gamepad2.left_stick_y != 0.0)
+            {
+                newArmPos = robot.armServo.getPosition() + (.01*gamepad2.left_stick_y);
+                robot.armServo.setPosition(newArmPos);
+            }
 
             // Send telemetry message to signify robot running;
            // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-            boolean armActivated = (gamepad1.y || gamepad1.a);
-            telemetry.addData("armMotor activated", armActivated);
+            telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
             telemetry.update();
