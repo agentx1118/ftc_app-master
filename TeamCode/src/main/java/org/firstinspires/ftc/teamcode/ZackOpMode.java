@@ -56,6 +56,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class ZackOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
+    //Changed from original HardwarePushbot class in order to preserve original class and still
+        // allow additional objects (such as the arm's servo) to be added
     HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
 
   //  IrSeekerSensor leftDistSense;
@@ -80,7 +82,7 @@ public class ZackOpMode extends LinearOpMode {
         robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
-    // Move the robot forward at speed
+    // Move the robot backward at speed
     private void moveBackward(double speed)
     {
         speed = Math.abs(speed);

@@ -37,8 +37,8 @@ public class SeanAutonomous extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-    private static final double     FORWARD_SPEED_LEFT = 1;
-    private static final double     FORWARD_SPEED_RIGHT = 1;
+    private static final double     FORWARD_SPEED_LEFT = 1 + OpModeConstants.LEFT_MOTOR_OFFSET;
+    private static final double     FORWARD_SPEED_RIGHT = 1 + OpModeConstants.RIGHT_MOTOR_OFFSET;
 
     @Override
     public void runOpMode() {

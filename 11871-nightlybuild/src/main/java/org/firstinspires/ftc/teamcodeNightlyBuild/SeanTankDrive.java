@@ -32,7 +32,7 @@ public class SeanTankDrive extends LinearOpMode{
         robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
-    // Move the robot forward at speed
+    // Move the robot backward at speed
     private void moveBackward(double speed)
     {
         speed = Math.abs(speed);
@@ -45,6 +45,38 @@ public class SeanTankDrive extends LinearOpMode{
 
         robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
         robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+    }
+
+    // Turn the robot right in a small radius
+    private void turnSharpRight(double speed)
+    {
+        speed = Math.abs(speed);
+        double left = -(speed);
+        double right = speed;
+        if (speed > 1.0)
+        {
+            left = -1.0;
+            right = 1.0;
+        }
+
+        robot.leftMotor.setPower(left - OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+    }
+
+    // Turn the robot left in a small radius
+    private void turnSharpLeft(double speed)
+    {
+        speed = Math.abs(speed);
+        double left = speed;
+        double right = -(speed);
+        if (speed > 1.0)
+        {
+            left = 1.0;
+            right = -1.0;
+        }
+
+        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right - OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
 
@@ -66,29 +98,25 @@ public class SeanTankDrive extends LinearOpMode{
 
         while(opModeIsActive())
         {
-            left = -gamepad1.left_stick_y;
-            right = -gamepad1.right_stick_y;
+            left = -gamepad1.left_stick_y * OpModeConstants.SPEED_MULT;
+            right = -gamepad1.right_stick_y * OpModeConstants.SPEED_MULT;
 
-            if(right-.25 >= 0)
-                right -= .25;
-            else
-                right += .25;
+            //Test below method ASAP
+            robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
 
-            if(left-.25 >= 0)
-                left -= .25;
-            else if(left+.25 < 0)
-                left += .25;
-
+            double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
+            double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) : (OpModeConstants.RIGHT_MOTOR_OFFSET);
+            left += lOffset;
+            right += rOffset;
             max = Math.max(Math.abs(left), Math.abs(right));
-
-            if(max > 1.0)
+            if (max > 1)
             {
                 left /= max;
                 right /= max;
             }
 
-            robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
-            robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+            robot.leftMotor.setPower(left);
+            robot.rightMotor.setPower(right);
 
             if(gamepad2.left_stick_y != 0.0)
             {
