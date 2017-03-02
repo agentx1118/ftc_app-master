@@ -59,7 +59,8 @@ public class HardwarePushbot_VoltronConfig
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        //modified to set servo to 0
+        //modified to scale armServo's movement range and set the position to the minimum postition.
+        robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
         armServo.setPosition(0);
 
         // Set all motors to run without encoders.
