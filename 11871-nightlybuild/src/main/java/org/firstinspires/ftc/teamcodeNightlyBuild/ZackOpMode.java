@@ -200,7 +200,7 @@ public class ZackOpMode extends LinearOpMode {
 
             // Use the left stick on controller 2 to move the arm
 
-            robot.armServo.setPosition(robot.armServo.getPosition() + (.01*gamepad2.left_stick_y));
+            robot.armServo.setPosition(robot.armServo.getPosition() + (0.03 * gamepad2.left_stick_y));
 
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);

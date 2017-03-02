@@ -37,8 +37,10 @@ public class SeanAutonomous extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-    private static final double     FORWARD_SPEED_LEFT = 1 + OpModeConstants.LEFT_MOTOR_OFFSET;
-    private static final double     FORWARD_SPEED_RIGHT = 1 + OpModeConstants.RIGHT_MOTOR_OFFSET;
+    private static final double     FORWARD_SPEED_LEFT = (1 + OpModeConstants.LEFT_MOTOR_OFFSET)
+            *OpModeConstants.SPEED_MULT*2;
+    private static final double     FORWARD_SPEED_RIGHT = (1 + OpModeConstants.RIGHT_MOTOR_OFFSET)
+            *OpModeConstants.SPEED_MULT*2;
 
     @Override
     public void runOpMode() {
@@ -50,7 +52,7 @@ public class SeanAutonomous extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
