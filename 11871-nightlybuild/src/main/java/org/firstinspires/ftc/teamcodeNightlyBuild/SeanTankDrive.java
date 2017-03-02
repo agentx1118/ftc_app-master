@@ -99,8 +99,8 @@ public class SeanTankDrive extends LinearOpMode{
 
         while(opModeIsActive())
         {
-            left = -gamepad1.left_stick_y * OpModeConstants.SPEED_MULT;
-            right = -gamepad1.right_stick_y * OpModeConstants.SPEED_MULT;
+            left = -gamepad1.right_stick_y * OpModeConstants.SPEED_MULT;
+            right = -gamepad1.left_stick_y * OpModeConstants.SPEED_MULT;
 
             //Test below method ASAP
             robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
