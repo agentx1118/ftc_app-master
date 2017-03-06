@@ -121,7 +121,7 @@ public class SeanTankDrive extends LinearOpMode{
 
             if(gamepad2.left_stick_y != 0.0)
             {
-                newArmPos = robot.armServo.getPosition() + (.01*gamepad2.left_stick_y);
+                newArmPos = robot.armServo.getPosition() + (.03*gamepad2.left_stick_y);
                 robot.armServo.setPosition(newArmPos);
             }
 
