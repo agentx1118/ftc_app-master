@@ -12,5 +12,6 @@ public class OpModeConstants
 
 
     public static final double ARM_MIN_POS = 0.0;          // The minimum arm position
-    public static final double ARM_MAX_POS = 0.8;          // The maximum arm position
+    public static final double ARM_MAX_POS = 0.9;          // The maximum arm position
+    public static final double ARM_SPEED_MULT = .03;       // Multiplier for the speed of the arm
 }

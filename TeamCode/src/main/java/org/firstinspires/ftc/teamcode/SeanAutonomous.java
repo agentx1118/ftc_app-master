@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * This file illustrates the concept of driving a path based on time.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -33,12 +31,14 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class SeanAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwarePushbot_VoltronConfig robot   = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
+    private HardwarePushbot_VoltronConfig robot   = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED_LEFT = 1 + OpModeConstants.LEFT_MOTOR_OFFSET;
-    static final double     FORWARD_SPEED_RIGHT = 1 + OpModeConstants.RIGHT_MOTOR_OFFSET;
+    private static final double     FORWARD_SPEED_LEFT = (1 + OpModeConstants.LEFT_MOTOR_OFFSET)
+            *OpModeConstants.SPEED_MULT*2;
+    private static final double     FORWARD_SPEED_RIGHT = (1 + OpModeConstants.RIGHT_MOTOR_OFFSET)
+            *OpModeConstants.SPEED_MULT*2;
 
     @Override
     public void runOpMode() {
@@ -50,7 +50,7 @@ public class SeanAutonomous extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -67,7 +67,7 @@ public class SeanAutonomous extends LinearOpMode {
             telemetry.update();
         }
 
-        // Step 4:  Stop the bot
+        // Step 2:  Stop the bot
         robot.leftMotor.setPower(0);
         robot.rightMotor.setPower(0);
 

@@ -52,15 +52,16 @@ public class HardwarePushbot_VoltronConfig
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
         //modified to define armServo
-        armServo    = hwMap.servo.get("armMotor");
+        armServo    = hwMap.servo.get("arm_servo");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        //modified to set servo to 0
-        armServo.setPosition(0);
+        //modified to scale armServo's movement range and set the position to the minimum postition.
+        armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
+        armServo.setPosition(1);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -88,10 +89,14 @@ public class HardwarePushbot_VoltronConfig
         long  remaining = periodMs - (long)period.milliseconds();
 
         // sleep for the remaining portion of the regular cycle period.
-        if (remaining > 0) {
-            try {
+        if (remaining > 0)
+        {
+            try
+            {
                 Thread.sleep(remaining);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e)
+            {
                 Thread.currentThread().interrupt();
             }
         }
