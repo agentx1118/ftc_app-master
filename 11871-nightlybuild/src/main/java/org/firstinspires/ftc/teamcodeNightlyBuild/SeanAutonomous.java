@@ -37,10 +37,11 @@ public class SeanAutonomous extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
 
+
     private static final double     FORWARD_SPEED_LEFT = (1 + OpModeConstants.LEFT_MOTOR_OFFSET)
-            *OpModeConstants.SPEED_MULT*2;
+            * OpModeConstants.AUTO_SPEED_MULT;
     private static final double     FORWARD_SPEED_RIGHT = (1 + OpModeConstants.RIGHT_MOTOR_OFFSET)
-            *OpModeConstants.SPEED_MULT*2;
+            * OpModeConstants.AUTO_SPEED_MULT;
 
     @Override
     public void runOpMode() {
@@ -64,7 +65,7 @@ public class SeanAutonomous extends LinearOpMode {
         robot.leftMotor.setPower(FORWARD_SPEED_LEFT);
         robot.rightMotor.setPower(FORWARD_SPEED_RIGHT);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.75)) {
+        while (opModeIsActive() && (runtime.seconds() < 2)) {
             telemetry.addData("Time", "Time Elapsed: %2.5f seconds", runtime.seconds());
             telemetry.update();
         }

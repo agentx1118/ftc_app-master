@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
 
-@TeleOp(name="Sean OpMode: Tank Drive (Warning: Experimental)", group="Pushbot")
+@TeleOp(name="Sean OpMode: Tank Drive (Warning: Experience required)", group="Pushbot")
 //@Disabled
 public class SeanTankDrive extends LinearOpMode{
     HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();
@@ -103,8 +103,6 @@ public class SeanTankDrive extends LinearOpMode{
             right = -gamepad1.right_stick_y * OpModeConstants.SPEED_MULT;
             left = -gamepad1.left_stick_y * OpModeConstants.SPEED_MULT;
 
-            //Test below method ASAP
-            robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
 
             double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
             double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) : (OpModeConstants.RIGHT_MOTOR_OFFSET);
@@ -119,18 +117,34 @@ public class SeanTankDrive extends LinearOpMode{
 
             robot.leftMotor.setPower(left);
             robot.rightMotor.setPower(right);
-
-            if(gamepad2.left_stick_y != 0.0)
+            // Trying to incorportate the dpad into the arm
+            if(gamepad2.dpad_up)
             {
-                newArmPos = robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y);
-                robot.armServo.setPosition(newArmPos);
+                robot.armServo.setPosition(robot.armServo.getPosition() + OpModeConstants.ARM_SPEED_MULT +
+                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            }
+            else if(gamepad2.dpad_down)
+            {
+                robot.armServo.setPosition(robot.armServo.getPosition() - OpModeConstants.ARM_SPEED_MULT +
+                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            }
+            else
+            {
+                robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
             }
 
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
             telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
+            // Potential method of switching controllers in an emergency?
 
+            /*if(gamepad2.back)
+            {
+                Gamepad temp = gamepad1;
+                gamepad1 = gamepad2;
+                gamepad2 = temp;
+            }*/
             robot.waitForTick(40);
         }
     }

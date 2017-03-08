@@ -162,8 +162,6 @@ public class ZackOpMode extends LinearOpMode {
             left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT;
             right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT;
 
-            // Scales armServo range so it does not exceed the proposed the physical limitations of the bot (Make sure to test ASAP)
-            robot.armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
 
             //Adds or subtracts offset of motors and normalizes range to a scale of+/-1.0
             double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
@@ -200,7 +198,21 @@ public class ZackOpMode extends LinearOpMode {
 
             // Use the left stick on controller 2 to move the arm
 
-            robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            //robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            if(gamepad2.dpad_up)
+            {
+                robot.armServo.setPosition(robot.armServo.getPosition() + OpModeConstants.ARM_SPEED_MULT +
+                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            }
+            else if(gamepad2.dpad_down)
+            {
+                robot.armServo.setPosition(robot.armServo.getPosition() - OpModeConstants.ARM_SPEED_MULT +
+                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            }
+            else
+            {
+                robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            }
 
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
