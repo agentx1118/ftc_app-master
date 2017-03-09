@@ -27,6 +27,7 @@ public class HardwarePushbot_VoltronConfig
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
     public Servo    armServo    = null;
+    public Servo    clawServo   = null;
    // public Servo    leftClaw    = null;
    // public Servo    rightClaw   = null;
 
@@ -53,6 +54,7 @@ public class HardwarePushbot_VoltronConfig
         rightMotor  = hwMap.dcMotor.get("right_drive");
         //modified to define armServo
         armServo    = hwMap.servo.get("arm_servo");
+        clawServo   = hwMap.servo.get("claw_servo");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
@@ -61,6 +63,8 @@ public class HardwarePushbot_VoltronConfig
         rightMotor.setPower(0);
         //modified to scale armServo's movement range and set the position to the minimum postition.
         armServo.scaleRange(OpModeConstants.ARM_MIN_POS, OpModeConstants.ARM_MAX_POS);
+        armServo.setPosition(1);
+        clawServo.scaleRange(OpModeConstants.CLAW_MIN_POS, OpModeConstants.ARM_MAX_POS);
         armServo.setPosition(1);
 
         // Set all motors to run without encoders.

@@ -117,21 +117,10 @@ public class SeanTankDrive extends LinearOpMode{
 
             robot.leftMotor.setPower(left);
             robot.rightMotor.setPower(right);
-            // Trying to incorportate the dpad into the arm
-            if(gamepad2.dpad_up)
-            {
-                robot.armServo.setPosition(robot.armServo.getPosition() + OpModeConstants.ARM_SPEED_MULT +
-                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            }
-            else if(gamepad2.dpad_down)
-            {
-                robot.armServo.setPosition(robot.armServo.getPosition() - OpModeConstants.ARM_SPEED_MULT +
-                        (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            }
-            else
-            {
-                robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            }
+
+
+            robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
 
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
