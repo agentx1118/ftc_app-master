@@ -88,7 +88,6 @@ public class SeanTankDrive extends LinearOpMode{
         double left;
         double right;
         double max;
-        double newArmPos;
 
         robot.init(hardwareMap);
 
@@ -120,7 +119,7 @@ public class SeanTankDrive extends LinearOpMode{
 
 
             robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
+            //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
 
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
