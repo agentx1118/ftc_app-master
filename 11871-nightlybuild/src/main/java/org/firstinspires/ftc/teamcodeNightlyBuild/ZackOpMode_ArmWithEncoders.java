@@ -58,7 +58,7 @@ public class ZackOpMode extends LinearOpMode {
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
         // allow additional objects (such as the arm's servo) to be added
-    HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();   // Use a Pushbot's hardware
+    HardwarePushbot_VoltronConfigEncoder robot = new HardwarePushbot_VoltronConfigEncoder();   // Use a Pushbot's hardware
 
     //  IrSeekerSensor leftDistSense;
     //  OpticalDistanceSensor rightDistSense;
