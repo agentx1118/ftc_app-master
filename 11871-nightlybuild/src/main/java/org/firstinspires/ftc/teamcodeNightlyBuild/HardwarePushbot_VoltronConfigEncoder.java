@@ -21,12 +21,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwarePushbot_VoltronConfig
+public class HardwarePushbot_VoltronConfigEncoder
 {
     /* Public OpMode members. */
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
-    public Motor    armMotor    = null;
+    public DcMotor  armMotor    = null;
     //public Servo    clawServo   = null;
    // public Servo    leftClaw    = null;
    // public Servo    rightClaw   = null;
@@ -40,7 +40,7 @@ public class HardwarePushbot_VoltronConfig
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwarePushbot_VoltronConfig(){
+    public HardwarePushbot_VoltronConfigEncoder(){
 
     }
 
@@ -53,7 +53,7 @@ public class HardwarePushbot_VoltronConfig
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
         //modified to define armServo
-        armMotor    = hwMap.servo.get("arm_motor");
+        armMotor    = hwMap.dcMotor.get("arm_motor");
         //clawServo   = hwMap.servo.get("claw_servo");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
@@ -62,6 +62,7 @@ public class HardwarePushbot_VoltronConfig
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
+        armMotor.setPower(0);
         //Add default values for armMotor here
         //clawServo.scaleRange(OpModeConstants.CLAW_MIN_POS, OpModeConstants.ARM_MAX_POS);
         //clawServo.setPosition(1);
@@ -70,7 +71,9 @@ public class HardwarePushbot_VoltronConfig
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
 
         // Define and initialize ALL installed servos.

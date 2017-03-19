@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcodeNightlyBuild;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -51,9 +52,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Zack OpMode: Playground", group="Pushbot")
+@TeleOp(name="Zack OpMode: Playground with Arm", group="Pushbot")
 //@Disabled
-public class ZackOpMode extends LinearOpMode {
+public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
 
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
@@ -78,8 +79,8 @@ public class ZackOpMode extends LinearOpMode {
             left = right = 1.0;
         }
 
-        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
-        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+        robot.leftMotor.setPower(left + OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
 
     // Move the robot backward at speed
@@ -93,8 +94,8 @@ public class ZackOpMode extends LinearOpMode {
             left = right = -1.0;
         }
 
-        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
-        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+        robot.leftMotor.setPower(left + OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
 
     // Turn the robot right in a small radius
@@ -109,8 +110,8 @@ public class ZackOpMode extends LinearOpMode {
             right = 1.0;
         }
 
-        robot.leftMotor.setPower(left - OpModeConstants.LEFT_MOTOR_OFFSET);
-        robot.rightMotor.setPower(right + OpModeConstants.RIGHT_MOTOR_OFFSET);
+        robot.leftMotor.setPower(left - OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right + OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
 
     // Turn the robot left in a small radius
@@ -125,14 +126,15 @@ public class ZackOpMode extends LinearOpMode {
             right = -1.0;
         }
 
-        robot.leftMotor.setPower(left + OpModeConstants.LEFT_MOTOR_OFFSET);
-        robot.rightMotor.setPower(right - OpModeConstants.RIGHT_MOTOR_OFFSET);
+        robot.leftMotor.setPower(left + OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
+        robot.rightMotor.setPower(right - OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
     @Override
     public void runOpMode() {
         double left;
         double right;
         double max;
+        double arm;
         double newArmPos;
 
         /* Initialize the hardware variables.
@@ -159,13 +161,14 @@ public class ZackOpMode extends LinearOpMode {
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT;
-            right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstants.SPEED_MULT;
+            left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
+            right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
+            arm   = (gamepad2.left_stick_y*OpModeConstantsWithEncoder.ARM_SPEED_MULT);
 
 
             //Adds or subtracts offset of motors and normalizes range to a scale of+/-1.0
-            double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
-            double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) : (OpModeConstants.RIGHT_MOTOR_OFFSET);
+            double lOffset = (left < 0.0) ? (-OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET) : (OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
+            double rOffset = (right < 0.0) ? (-OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET) : (OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
             left += lOffset;
             right += rOffset;
             max = Math.max(Math.abs(left), Math.abs(right));
@@ -184,7 +187,27 @@ public class ZackOpMode extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
+            if(Math.abs(arm) > 1)
+            {
+                arm = arm/arm;
+            }
+            if(robot.armMotor.getCurrentPosition() == 600 || robot.armMotor.getCurrentPosition() == 10)
+            {
+                robot.armMotor.setPower(0);
+            }
+            else
+            {
+                robot.armMotor.setPower(arm);
+            }
 
+            if(gamepad2.x)
+            {
+                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.armMotor.setMaxSpeed(500);
+                robot.armMotor.setTargetPosition(0);
+                robot.armMotor.setMaxSpeed(4000);
+                robot.armMotor.setTargetPosition(480);
+            }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
             //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
@@ -198,15 +221,15 @@ public class ZackOpMode extends LinearOpMode {
 
             // Use the left stick on controller 2 to move the arm
 
-            robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
+            //robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstantsWithEncoder.ARM_SPEED_MULT * gamepad2.left_stick_y));
+            //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstantsWithEncoder.CLAW_SPEED_MULT * gamepad2.right_stick_y));
 
 
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
-            telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
+            //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
