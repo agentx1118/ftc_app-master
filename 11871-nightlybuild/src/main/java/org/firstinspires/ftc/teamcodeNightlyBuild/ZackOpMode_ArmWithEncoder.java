@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Zack OpMode: Playground with Arm", group="Pushbot")
+@TeleOp(name="ArmEncoder", group="Pushbot")
 //@Disabled
 public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
 
@@ -191,22 +191,24 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             {
                 arm = arm/arm;
             }
-            if(robot.armMotor.getCurrentPosition() == 600 || robot.armMotor.getCurrentPosition() == 10)
+            if((robot.armMotor.getCurrentPosition() == 600 || robot.armMotor.getCurrentPosition() == 10) && !robot.armMotor.isBusy())
             {
                 robot.armMotor.setPower(0);
             }
-            else
+            else if(!robot.armMotor.isBusy())
             {
                 robot.armMotor.setPower(arm);
             }
 
-            if(gamepad2.x)
+            if(gamepad2.x && !robot.armMotor.isBusy())
             {
                 robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.armMotor.setMaxSpeed(500);
-                robot.armMotor.setTargetPosition(0);
+                robot.armMotor.setTargetPosition(10);
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(480);
+                try{Thread.sleep(500);}catch (Exception e){}
+                robot.armMotor.setTargetPosition(10);
             }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
@@ -229,6 +231,8 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
+            telemetry.addData("arm_motor", "%.4f", arm);
+            telemetry.addData("encoder_pos", "%.2f", robot.armMotor.getCurrentPosition());
             //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
