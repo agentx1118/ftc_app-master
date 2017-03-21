@@ -194,13 +194,13 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             if((robot.armMotor.getCurrentPosition() == 600))
             {
                 robot.armMotor.setPower(-1);
-                try{Thread.sleep(1);}catch (Exception e){}
+                try{Thread.sleep(40);}catch (Exception e){}
                 robot.armMotor.setPower(0);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             else
             {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+100);
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(gamepad2.left_stick_y*100));
                 robot.armMotor.setPower(.5);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
@@ -212,6 +212,7 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
                 robot.armMotor.setPower(1);
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(480);
+
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 try {
                     Thread.sleep(500);
@@ -242,11 +243,14 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
 
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+            String armMode = "" + robot.armMotor.getMode();
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
             telemetry.addData("arm_motor", "%.4f", arm);
             telemetry.addData("arm_motor_power" , "%4f", robot.armMotor.getPower());
             telemetry.addData("encoder_pos", "%d", robot.armMotor.getCurrentPosition());
+            telemetry.addData("target_pos", "%d", robot.armMotor.getTargetPosition());
+            telemetry.addData("arm_mode", armMode);
             //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
