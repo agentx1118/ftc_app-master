@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @TeleOp(name="Zack OpMode: Playground", group="Pushbot")
-@Disabled
+//@Disabled
 public class ZackOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */

@@ -52,13 +52,13 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="ArmEncoder", group="Pushbot")
+@TeleOp(name="Zack OpMode: ArmEncoder", group="Pushbot")
 //@Disabled
 public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
 
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
-        // allow additional objects (such as the arm's servo) to be added
+    // allow additional objects (such as the arm's servo) to be added
     HardwarePushbot_VoltronConfigEncoder robot = new HardwarePushbot_VoltronConfigEncoder();   // Use a Pushbot's hardware
 
     //  IrSeekerSensor leftDistSense;
@@ -163,7 +163,7 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
             right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
-            arm   = (gamepad2.left_stick_y*OpModeConstantsWithEncoder.ARM_SPEED_MULT);
+            arm   = (gamepad2.left_stick_y);
 
 
             //Adds or subtracts offset of motors and normalizes range to a scale of+/-1.0
@@ -191,24 +191,37 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             {
                 arm = arm/arm;
             }
-            if((robot.armMotor.getCurrentPosition() == 600 || robot.armMotor.getCurrentPosition() == 10) && !robot.armMotor.isBusy())
+            if((robot.armMotor.getCurrentPosition() == 600))
             {
+                robot.armMotor.setPower(-1);
+                try{Thread.sleep(1);}catch (Exception e){}
                 robot.armMotor.setPower(0);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            else if(!robot.armMotor.isBusy())
+            else
             {
-                robot.armMotor.setPower(arm);
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+100);
+                robot.armMotor.setPower(.5);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
-            if(gamepad2.x && !robot.armMotor.isBusy())
-            {
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(500);
+            if(gamepad2.x) {
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.armMotor.setMaxSpeed(200);
                 robot.armMotor.setTargetPosition(10);
+                robot.armMotor.setPower(1);
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(480);
-                try{Thread.sleep(500);}catch (Exception e){}
-                robot.armMotor.setTargetPosition(10);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+                robot.armMotor.setTargetPosition(0);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                robot.armMotor.setPower(0);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
@@ -232,7 +245,8 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
             telemetry.addData("arm_motor", "%.4f", arm);
-            telemetry.addData("encoder_pos", "%.2f", robot.armMotor.getCurrentPosition());
+            telemetry.addData("arm_motor_power" , "%4f", robot.armMotor.getPower());
+            telemetry.addData("encoder_pos", "%d", robot.armMotor.getCurrentPosition());
             //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
