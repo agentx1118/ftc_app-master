@@ -228,10 +228,6 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
                 robot.armMotor.setTargetPosition(450);
 
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                }
             }
             if(gamepad2.y && !isNorm) {
                 /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -247,10 +243,6 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
                 robot.armMotor.setTargetPosition(0);
 
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                }
             }
             if(isNorm)
             {
