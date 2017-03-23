@@ -30,13 +30,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcodeNightlyBuild;
+package org.firstinspires.ftc.robotcontroller.internal;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -52,9 +49,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Zack OpMode: ArmEncoder", group="Pushbot")
+@TeleOp(name="ArmEncoder", group="Pushbot")
 //@Disabled
-public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
+public class ZackOpModeArmWithEncoder extends LinearOpMode {
 
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
@@ -187,6 +184,8 @@ public class ZackOpMode_ArmWithEncoder extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+            robot.armMotor.setPower(.5);
             if(Math.abs(arm) > 1)
             {
                 arm = arm/arm;

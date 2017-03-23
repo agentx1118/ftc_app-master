@@ -73,6 +73,7 @@ public class FtcOpModeRegister implements OpModeRegister {
          * Register OpModes that use the annotation-based registration mechanism.
          */
         AnnotatedOpModeRegistrar.register(manager);
+        manager.register("ArmEncoder", ZackOpModeArmWithEncoder.class);
 
         /**
          * Any manual OpMode class registrations should go here.
