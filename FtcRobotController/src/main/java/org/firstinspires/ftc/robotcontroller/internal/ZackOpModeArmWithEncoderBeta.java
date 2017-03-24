@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.robotcontroller.internal;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -43,9 +44,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="ArmEncoder", group="Pushbot")
-//@Disabled
-public class ZackOpModeArmWithEncoder extends LinearOpMode {
+@TeleOp(name="ArmEncoder: Beta (Only for testing)", group="Pushbot")
+@Disabled
+public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
 
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
@@ -184,12 +185,18 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             {
                 arm = arm/arm;
             }
-            if((robot.armMotor.getCurrentPosition() == 600))
+            if((robot.armMotor.getCurrentPosition() > 450))
             {
                 robot.armMotor.setPower(-1);
                 try{Thread.sleep(40);}catch (Exception e){}
                 robot.armMotor.setPower(0);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            if((robot.armMotor.getCurrentPosition() < 10))
+            {
+                robot.armMotor.setPower(1);
+                try{Thread.sleep(40);}catch (Exception e){}
+                robot.armMotor.setPower(0);
             }
             else
             {
@@ -200,22 +207,37 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
 
             if(gamepad2.x) {
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(200);
-                robot.armMotor.setTargetPosition(10);
-                robot.armMotor.setPower(1);
+                //robot.armMotor.setMaxSpeed(200);
+                //robot.armMotor.setTargetPosition(10);
+                robot.armMotor.setPower(.5);
                 robot.armMotor.setMaxSpeed(4000);
-                robot.armMotor.setTargetPosition(480);
+                robot.armMotor.setTargetPosition(450);
 
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                try {
+                /*try {
                     Thread.sleep(500);
                 } catch (Exception e) {
-                }
+                }*/
                 robot.armMotor.setTargetPosition(0);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 robot.armMotor.setPower(0);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            if(gamepad2.y){
+                robot.armMotor.setPower(-.5);
+                robot.armMotor.setMaxSpeed(4000);
+                robot.armMotor.setTargetPosition(20);
+
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                /*try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }*/
+                //robot.armMotor.setTargetPosition(0);
+                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.armMotor.setTargetPosition(450);
+                robot.armMotor.setPower(0);
             }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
