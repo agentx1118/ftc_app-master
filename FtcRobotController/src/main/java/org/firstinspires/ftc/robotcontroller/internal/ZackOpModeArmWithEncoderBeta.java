@@ -29,6 +29,7 @@ package org.firstinspires.ftc.robotcontroller.internal;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -127,7 +128,12 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
         double right;
         double max;
         double arm;
-        double newArmPos;
+        double armPos;
+        double armFactor;
+        boolean isGreaterThanMax;
+        boolean isLessThanMin;
+        boolean isLeftBumperPressed;
+        boolean isRightBumperPressed;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -148,6 +154,8 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
 
         long lastTime = System.currentTimeMillis();
 
+        //Variables that may need to be added to OpModeConstants
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -156,6 +164,12 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
             right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
             arm   = (gamepad2.left_stick_y);
+            armPos = robot.armMotor.getCurrentPosition();
+            armFactor = OpModeConstantsWithEncoder.armFactor;
+            isGreaterThanMax = OpModeConstantsWithEncoder.isGreaterThanMax;
+            isLessThanMin = OpModeConstantsWithEncoder.isLessThanMin;
+            isLeftBumperPressed = OpModeConstantsWithEncoder.isLeftBumperPressed;
+            isRightBumperPressed = OpModeConstantsWithEncoder.isRightBumperPressed;
 
 
             //Adds or subtracts offset of motors and normalizes range to a scale of+/-1.0
@@ -179,29 +193,39 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-            robot.armMotor.setPower(.5);
+            //robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+            //robot.armMotor.setPower(.5);
             if(Math.abs(arm) > 1)
             {
                 arm = arm/arm;
             }
-            if((robot.armMotor.getCurrentPosition() > 450))
+
+            if(armPos > 450 && isGreaterThanMax == false)
             {
-                robot.armMotor.setPower(-1);
-                try{Thread.sleep(40);}catch (Exception e){}
-                robot.armMotor.setPower(0);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.armMotor.setTargetPosition(450);
+                robot.armMotor.setPower(-.5);
+                OpModeConstantsWithEncoder.isGreaterThanMax = true;
             }
-            if((robot.armMotor.getCurrentPosition() < 10))
+            else if(armPos <= 450 && isGreaterThanMax == true)
             {
-                robot.armMotor.setPower(1);
-                try{Thread.sleep(40);}catch (Exception e){}
                 robot.armMotor.setPower(0);
+                OpModeConstantsWithEncoder.isGreaterThanMax = false;
+            }
+            else if(armPos < 20 && isLessThanMin == false)
+            {
+                robot.armMotor.setTargetPosition(20);
+                robot.armMotor.setPower(.5);
+                OpModeConstantsWithEncoder.isLessThanMin = true;
+            }
+            else if(armPos >= 20 && isLessThanMin == true)
+            {
+                robot.armMotor.setPower(0);
+                OpModeConstantsWithEncoder.isLessThanMin = false;
             }
             else
             {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(gamepad2.left_stick_y*100));
-                robot.armMotor.setPower(.5);
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+                robot.armMotor.setPower(.5*OpModeConstantsWithEncoder.armFactor);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
@@ -218,7 +242,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                     Thread.sleep(500);
                 } catch (Exception e) {
                 }*/
-                robot.armMotor.setTargetPosition(0);
+                robot.armMotor.setTargetPosition(20);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 robot.armMotor.setPower(0);
@@ -240,6 +264,35 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                 robot.armMotor.setPower(0);
             }
 
+
+            if(gamepad2.left_bumper && isLeftBumperPressed == false)
+            {
+                OpModeConstantsWithEncoder.armFactor /= 2;
+                OpModeConstantsWithEncoder.isLeftBumperPressed = true;
+            }
+            else if(!gamepad2.left_bumper && isLeftBumperPressed == true)
+            {
+                OpModeConstantsWithEncoder.isLeftBumperPressed = false;
+            }
+            else if(gamepad2.right_bumper && isRightBumperPressed == false && armFactor < 1)
+            {
+                OpModeConstantsWithEncoder.armFactor *= 2;
+                OpModeConstantsWithEncoder.isRightBumperPressed = true;
+            }
+            else if(!gamepad2.right_bumper && isRightBumperPressed == true)
+            {
+                OpModeConstantsWithEncoder.isRightBumperPressed = false;
+            }
+
+            if(armPos > 400)
+            {
+                robot.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
+            else
+            {
+                robot.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
             // Move both servos to new position.  Assume servos are mirror image of each other.
             //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 
@@ -259,6 +312,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             // Send telemetry message to signify robot running
             // telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             String armMode = "" + robot.armMotor.getMode();
+            String zeroPower = "" + robot.armMotor.getZeroPowerBehavior();
             telemetry.addData("left_drive",  "%.2f", left);
             telemetry.addData("right_drive", "%.2f", right);
             telemetry.addData("arm_motor", "%.4f", arm);
@@ -266,6 +320,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             telemetry.addData("encoder_pos", "%d", robot.armMotor.getCurrentPosition());
             telemetry.addData("target_pos", "%d", robot.armMotor.getTargetPosition());
             telemetry.addData("arm_mode", armMode);
+            telemetry.addData("zero_power_state", zeroPower);
             //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
 
