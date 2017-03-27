@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 
 @TeleOp(name="ArmEncoder: Beta (Only for testing)", group="Pushbot")
-@Disabled
+//@Disabled
 public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -200,24 +200,24 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                 arm = arm/arm;
             }
 
-            if(armPos > 450 && isGreaterThanMax == false)
+            if(armPos > 450 && !isGreaterThanMax)
             {
                 robot.armMotor.setTargetPosition(450);
                 robot.armMotor.setPower(-.5);
                 OpModeConstantsWithEncoder.isGreaterThanMax = true;
             }
-            else if(armPos <= 450 && isGreaterThanMax == true)
+            else if(armPos <= 450 && isGreaterThanMax)
             {
                 robot.armMotor.setPower(0);
                 OpModeConstantsWithEncoder.isGreaterThanMax = false;
             }
-            else if(armPos < 20 && isLessThanMin == false)
+            else if(armPos < 20 && !isLessThanMin)
             {
                 robot.armMotor.setTargetPosition(20);
                 robot.armMotor.setPower(.5);
                 OpModeConstantsWithEncoder.isLessThanMin = true;
             }
-            else if(armPos >= 20 && isLessThanMin == true)
+            else if(armPos >= 20 && isLessThanMin)
             {
                 robot.armMotor.setPower(0);
                 OpModeConstantsWithEncoder.isLessThanMin = false;
@@ -265,21 +265,21 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             }
 
 
-            if(gamepad2.left_bumper && isLeftBumperPressed == false)
+            if(gamepad2.left_bumper && !isLeftBumperPressed)
             {
                 OpModeConstantsWithEncoder.armFactor /= 2;
                 OpModeConstantsWithEncoder.isLeftBumperPressed = true;
             }
-            else if(!gamepad2.left_bumper && isLeftBumperPressed == true)
+            else if(!gamepad2.left_bumper && isLeftBumperPressed)
             {
                 OpModeConstantsWithEncoder.isLeftBumperPressed = false;
             }
-            else if(gamepad2.right_bumper && isRightBumperPressed == false && armFactor < 1)
+            else if(gamepad2.right_bumper && !isRightBumperPressed && armFactor < 1)
             {
                 OpModeConstantsWithEncoder.armFactor *= 2;
                 OpModeConstantsWithEncoder.isRightBumperPressed = true;
             }
-            else if(!gamepad2.right_bumper && isRightBumperPressed == true)
+            else if(!gamepad2.right_bumper && isRightBumperPressed)
             {
                 OpModeConstantsWithEncoder.isRightBumperPressed = false;
             }
