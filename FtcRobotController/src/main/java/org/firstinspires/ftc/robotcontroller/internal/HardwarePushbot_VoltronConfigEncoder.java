@@ -73,6 +73,7 @@ public class HardwarePushbot_VoltronConfigEncoder
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //armMotor.setTargetPosition(600);*/
         //armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

@@ -16,6 +16,7 @@ public class OpModeConstantsWithEncoder
     public static double armFactor = 1;
     public static boolean isGreaterThanMax = false;
     public static boolean isLessThanMin = false;
+    public static boolean isThrowing = false;
     public static boolean isLeftBumperPressed = false;
     public static boolean isRightBumperPressed = false;
 
