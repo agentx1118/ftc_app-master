@@ -68,16 +68,14 @@ public class HardwarePushbot_VoltronConfigEncoder
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //armMotor.setTargetPosition(600);*/
         //armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
 
         // Define and initialize ALL installed servos.
        // leftClaw = hwMap.servo.get("left_hand");

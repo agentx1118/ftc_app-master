@@ -13,12 +13,15 @@ public class OpModeConstantsWithEncoder
     public static final double AUTO_SPEED_MULT =           // Multiplier for the speed of both drive motors during autonomous
         (SPEED_MULT*AUTO_SPEED_FACTOR > 1) ? 1 : SPEED_MULT*AUTO_SPEED_FACTOR;
 
-    public static double armFactor = 1;
+    public static double armFactorWheels = 1;
+    public static double armFactorArm = 1;
     public static boolean isGreaterThanMax = false;
     public static boolean isLessThanMin = false;
     public static boolean isThrowing = false;
-    public static boolean isLeftBumperPressed = false;
-    public static boolean isRightBumperPressed = false;
+    public static boolean isLeftBumperPressedWheels = false;
+    public static boolean isLeftBumperPressedArm = false;
+    public static boolean isRightBumperPressedWheels = false;
+    public static boolean isRightBumperPressedArm = false;
 
     //public static final double CLAW_MIN_POS = 0.0;          // The minimum claw position
     //public static final double CLAW_MAX_POS = 1.0;          // The maximum claw position

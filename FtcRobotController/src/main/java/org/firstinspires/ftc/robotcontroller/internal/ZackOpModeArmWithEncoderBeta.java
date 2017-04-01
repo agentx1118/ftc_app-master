@@ -130,11 +130,14 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
         double max;
         double arm;
         double armPos;
-        double armFactor;
+        double armFactorArm;
+        double armFactorWheels;
         boolean isGreaterThanMax;
         boolean isLessThanMin;
-        boolean isLeftBumperPressed;
-        boolean isRightBumperPressed;
+        boolean isLeftBumperPressedWheels;
+        boolean isRightBumperPressedWheels;
+        boolean isLeftBumperPressedArm;
+        boolean isRightBumperPressedArm;
         int armMax;
         int armMin;
         boolean isThrowing;
@@ -165,15 +168,18 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
-            right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT;
+            armFactorWheels = OpModeConstantsWithEncoder.armFactorWheels;
+            left  = (-gamepad1.left_stick_y + gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT * armFactorWheels;
+            right = (-gamepad1.left_stick_y - gamepad1.right_stick_x) * OpModeConstantsWithEncoder.SPEED_MULT  * armFactorWheels;
             arm   = (gamepad2.left_stick_y);
             armPos = robot.armMotor.getCurrentPosition();
-            armFactor = OpModeConstantsWithEncoder.armFactor;
+            armFactorArm = OpModeConstantsWithEncoder.armFactorArm;
             isGreaterThanMax = OpModeConstantsWithEncoder.isGreaterThanMax;
             isLessThanMin = OpModeConstantsWithEncoder.isLessThanMin;
-            isLeftBumperPressed = OpModeConstantsWithEncoder.isLeftBumperPressed;
-            isRightBumperPressed = OpModeConstantsWithEncoder.isRightBumperPressed;
+            isLeftBumperPressedWheels = OpModeConstantsWithEncoder.isLeftBumperPressedWheels;
+            isRightBumperPressedWheels = OpModeConstantsWithEncoder.isRightBumperPressedWheels;
+            isLeftBumperPressedArm = OpModeConstantsWithEncoder.isLeftBumperPressedArm;
+            isRightBumperPressedArm = OpModeConstantsWithEncoder.isRightBumperPressedArm;
             armMax = -370;
             armMin = -30;
             isThrowing = OpModeConstantsWithEncoder.isThrowing;
@@ -210,7 +216,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             if(armPos < armMax && !isGreaterThanMax)
             {
                 robot.armMotor.setTargetPosition(armMax);
-                robot.armMotor.setPower(-.5);
+                robot.armMotor.setPower(.5);
                 OpModeConstantsWithEncoder.isGreaterThanMax = true;
             }
             else if(armPos > armMax && isGreaterThanMax)
@@ -221,7 +227,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             else if(armPos > armMin && !isLessThanMin)
             {
                 robot.armMotor.setTargetPosition(armMin);
-                robot.armMotor.setPower(.5);
+                robot.armMotor.setPower(-.5);
                 OpModeConstantsWithEncoder.isLessThanMin = true;
             }
             else if(armPos < armMin && isLessThanMin)
@@ -232,7 +238,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             else
             {
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-                robot.armMotor.setPower(1*OpModeConstantsWithEncoder.armFactor);
+                robot.armMotor.setPower(1*OpModeConstantsWithEncoder.armFactorArm);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
@@ -242,7 +248,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                 //robot.armMotor.setTargetPosition(10);
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(armMax);
-                robot.armMotor.setPower(.5);
+                robot.armMotor.setPower(-.5);
                 OpModeConstantsWithEncoder.isThrowing = true;
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 /*try {
@@ -260,7 +266,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             if(gamepad2.y){
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(armMin);
-                robot.armMotor.setPower(-.5);
+                robot.armMotor.setPower(.5);
 
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 /*try {
@@ -277,23 +283,42 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             }
 
 
-            if(gamepad2.left_bumper && !isLeftBumperPressed)
+            if(gamepad2.left_bumper && !isLeftBumperPressedArm)
             {
-                OpModeConstantsWithEncoder.armFactor /= 2;
-                OpModeConstantsWithEncoder.isLeftBumperPressed = true;
+                OpModeConstantsWithEncoder.armFactorArm /= 2;
+                OpModeConstantsWithEncoder.isLeftBumperPressedArm = true;
             }
-            else if(!gamepad2.left_bumper && isLeftBumperPressed)
+            else if(!gamepad2.left_bumper && isLeftBumperPressedArm)
             {
-                OpModeConstantsWithEncoder.isLeftBumperPressed = false;
+                OpModeConstantsWithEncoder.isLeftBumperPressedArm = false;
             }
-            else if(gamepad2.right_bumper && !isRightBumperPressed && armFactor < 1)
+            else if(gamepad2.right_bumper && !isRightBumperPressedArm && armFactorArm < 1)
             {
-                OpModeConstantsWithEncoder.armFactor *= 2;
-                OpModeConstantsWithEncoder.isRightBumperPressed = true;
+                OpModeConstantsWithEncoder.armFactorArm *= 2;
+                OpModeConstantsWithEncoder.isRightBumperPressedArm = true;
             }
-            else if(!gamepad2.right_bumper && isRightBumperPressed)
+            else if(!gamepad2.right_bumper && isRightBumperPressedArm)
             {
-                OpModeConstantsWithEncoder.isRightBumperPressed = false;
+                OpModeConstantsWithEncoder.isRightBumperPressedArm = false;
+            }
+
+            if(gamepad1.left_bumper && !isLeftBumperPressedWheels)
+            {
+                OpModeConstantsWithEncoder.armFactorWheels /= 2;
+                OpModeConstantsWithEncoder.isLeftBumperPressedWheels = true;
+            }
+            else if(!gamepad1.left_bumper && isLeftBumperPressedWheels)
+            {
+                OpModeConstantsWithEncoder.isLeftBumperPressedWheels = false;
+            }
+            else if(gamepad1.right_bumper && !isRightBumperPressedWheels && armFactorWheels < 1)
+            {
+                OpModeConstantsWithEncoder.armFactorWheels *= 2;
+                OpModeConstantsWithEncoder.isRightBumperPressedWheels = true;
+            }
+            else if(!gamepad1.right_bumper && isRightBumperPressedWheels)
+            {
+                OpModeConstantsWithEncoder.isRightBumperPressedWheels = false;
             }
 
             /*if(armPos > 300)
