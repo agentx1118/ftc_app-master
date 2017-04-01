@@ -132,8 +132,8 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
         double armPos;
         double armFactorArm;
         double armFactorWheels;
-        boolean isGreaterThanMax;
-        boolean isLessThanMin;
+        boolean isGreaterThanMax_Moving;
+        boolean isLessThanMin_Moving;
         boolean isLeftBumperPressedWheels;
         boolean isRightBumperPressedWheels;
         boolean isLeftBumperPressedArm;
@@ -174,8 +174,8 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             arm   = (gamepad2.left_stick_y);
             armPos = robot.armMotor.getCurrentPosition();
             armFactorArm = OpModeConstantsWithEncoder.armFactorArm;
-            isGreaterThanMax = OpModeConstantsWithEncoder.isGreaterThanMax;
-            isLessThanMin = OpModeConstantsWithEncoder.isLessThanMin;
+            isGreaterThanMax_Moving = OpModeConstantsWithEncoder.isGreaterThanMax_Moving;
+            isLessThanMin_Moving = OpModeConstantsWithEncoder.isLessThanMin_Moving;
             isLeftBumperPressedWheels = OpModeConstantsWithEncoder.isLeftBumperPressedWheels;
             isRightBumperPressedWheels = OpModeConstantsWithEncoder.isRightBumperPressedWheels;
             isLeftBumperPressedArm = OpModeConstantsWithEncoder.isLeftBumperPressedArm;
@@ -213,32 +213,32 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                 arm = arm/arm;
             }
 
-            if(armPos < armMax && !isGreaterThanMax)
+            if(armPos < armMax && !isGreaterThanMax_Moving)
             {
                 robot.armMotor.setTargetPosition(armMax);
                 robot.armMotor.setPower(.5);
-                OpModeConstantsWithEncoder.isGreaterThanMax = true;
+                OpModeConstantsWithEncoder.isGreaterThanMax_Moving = true;
             }
-            else if(armPos > armMax && isGreaterThanMax)
+            else if(armPos > armMax && isGreaterThanMax_Moving)
             {
                 robot.armMotor.setPower(0);
-                OpModeConstantsWithEncoder.isGreaterThanMax = false;
+                OpModeConstantsWithEncoder.isGreaterThanMax_Moving = false;
             }
-            else if(armPos > armMin && !isLessThanMin)
+            else if(armPos > armMin && !isLessThanMin_Moving)
             {
                 robot.armMotor.setTargetPosition(armMin);
                 robot.armMotor.setPower(-.5);
-                OpModeConstantsWithEncoder.isLessThanMin = true;
+                OpModeConstantsWithEncoder.isLessThanMin_Moving = true;
             }
-            else if(armPos < armMin && isLessThanMin)
+            else if(armPos < armMin && isLessThanMin_Moving)
             {
                 robot.armMotor.setPower(0);
-                OpModeConstantsWithEncoder.isLessThanMin = false;
+                OpModeConstantsWithEncoder.isLessThanMin_Moving = false;
             }
             else
             {
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-                robot.armMotor.setPower(1*OpModeConstantsWithEncoder.armFactorArm);
+                robot.armMotor.setPower(1*armFactorArm);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
@@ -259,11 +259,11 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
 
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            if(isThrowing && robot.armMotor.getCurrentPosition() == armMax)
+            else if(isThrowing && robot.armMotor.getCurrentPosition() == armMax)
             {
                 robot.armMotor.setPower(0);
             }
-            if(gamepad2.y){
+            if(gamepad2.y && !isThrowing){
                 robot.armMotor.setMaxSpeed(4000);
                 robot.armMotor.setTargetPosition(armMin);
                 robot.armMotor.setPower(.5);
@@ -277,7 +277,7 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 OpModeConstantsWithEncoder.isThrowing = true;
             }
-            if(isThrowing && robot.armMotor.getCurrentPosition() == armMin)
+            else if(isThrowing && robot.armMotor.getCurrentPosition() == armMin)
             {
                 robot.armMotor.setPower(0);
             }
@@ -358,8 +358,8 @@ public class ZackOpModeArmWithEncoderBeta extends LinearOpMode {
             telemetry.addData("target_pos", "%d", robot.armMotor.getTargetPosition());
             telemetry.addData("arm_mode", armMode);
             telemetry.addData("zero_power_state", zeroPower);
-            telemetry.addData("isGreaterThanMax", isGreaterThanMax);
-            telemetry.addData("isLessThanMin", isLessThanMin);
+            telemetry.addData("isGreaterThanMax_Moving", isGreaterThanMax_Moving);
+            telemetry.addData("isLessThanMin_Moving", isLessThanMin_Moving);
             telemetry.addData("isThrowing",isThrowing);
             //telemetry.addData("arm_servo", "%.2f", robot.armServo.getPosition());
             telemetry.update();
