@@ -120,6 +120,20 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
         robot.leftMotor.setPower(left + OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
         robot.rightMotor.setPower(right - OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
+
+    private boolean isOutOfBounds_Up()
+    {
+        if(robot.armMotor.getCurrentPosition() < -400)
+            return true;
+        return false;
+    }
+
+    private boolean isOutOfBounds_Down()
+    {
+        if(robot.armMotor.getCurrentPosition() > 0)
+            return true;
+        return false;
+    }
     @Override
     public void runOpMode() {
         double left;
@@ -178,13 +192,35 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-            robot.armMotor.setPower(.5);
+
             if(Math.abs(arm) > 1)
             {
                 arm = arm/arm;
             }
-            if((robot.armMotor.getCurrentPosition() == 600))
+            robot.armMotor.setPower(.5);
+            if(!(isOutOfBounds_Up() || isOutOfBounds_Down()))
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+((int)(arm*100)));
+            else if(isOutOfBounds_Up())
+                robot.armMotor.setTargetPosition(-390);
+            else if(isOutOfBounds_Down())
+                robot.armMotor.setTargetPosition(10);
+            else
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+
+            /*try
+            {
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+            }
+            catch(Exception Ex)
+            {
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+            }
+            finally
+            {
+                if (robot.armMotor.getCurrentPosition() == -400 || robot.armMotor.getCurrentPosition() == 1)
+                    robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+            }*/
+            /*if((robot.armMotor.getCurrentPosition() == 600))
             {
                 robot.armMotor.setPower(-1);
                 try{Thread.sleep(40);}catch (Exception e){}
@@ -196,27 +232,36 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(gamepad2.left_stick_y*100));
                 robot.armMotor.setPower(.5);
                 //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
+            }*/
 
-            if(gamepad2.x) {
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(200);
-                robot.armMotor.setTargetPosition(10);
-                robot.armMotor.setPower(1);
-                robot.armMotor.setMaxSpeed(4000);
-                robot.armMotor.setTargetPosition(480);
+            try
+            {
+                if(gamepad2.x)
+                {
+                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION;
+                    robot.armMotor.setPower(1);
+                    robot.armMotor.setMaxSpeed(4000);
+                    robot.armMotor.setTargetPosition(-370);
 
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
+                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    /*try {
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                    }*/
+                    //robot.armMotor.setTargetPosition(0);
+                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    //robot.armMotor.setPower(0);
+                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
-                robot.armMotor.setTargetPosition(0);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                robot.armMotor.setPower(0);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+            catch(Exception Ex){
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+            }
+            finally{
+                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+            }
+
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
             //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
