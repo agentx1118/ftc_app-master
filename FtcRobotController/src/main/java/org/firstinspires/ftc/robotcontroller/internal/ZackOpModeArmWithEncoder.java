@@ -134,6 +134,17 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             return true;
         return false;
     }
+
+    private int encoderToDegrees(int enc)
+    {
+        return(enc/4);
+    }
+
+    private int degreesToEncoder(int deg)
+    {
+        return(deg*4);
+    }
+
     @Override
     public void runOpMode() {
         double left;
@@ -195,6 +206,7 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             //Uses left stick on gamepad 2 to move arm
             if(Math.abs(arm) > 1)
             {
+
                 arm = arm/arm;
             }
             robot.armMotor.setPower(.5);
