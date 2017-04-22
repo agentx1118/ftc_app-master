@@ -1,3 +1,9 @@
+# FTC Team 11871- Voltron
+Welcome to the repository for our robot, Voltron. Here you'll find the latest updates to the project and the changelogs, which are in 
+the file changelog.txt. Please contact either the owner or one of the contributors if you would like to borrow any of our code, but feel 
+free to take a look for ideas. Updated changelogs will likely be posted every Friday night (as long as there have been commits during 
+the week).
+
 # ftc_app
 FTC Android Studio project to create FTC Robot Controller app.
 
