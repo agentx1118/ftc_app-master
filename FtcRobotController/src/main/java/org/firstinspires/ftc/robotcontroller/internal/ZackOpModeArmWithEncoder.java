@@ -134,6 +134,17 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             return true;
         return false;
     }
+
+    private int encoderToDegrees(int enc)
+    {
+        return(enc/4);
+    }
+
+    private int degreesToEncoder(int deg)
+    {
+        return(deg*4);
+    }
+
     @Override
     public void runOpMode() {
         double left;
@@ -192,67 +203,29 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
-
+            //Uses left stick on gamepad 2 to move arm
             if(Math.abs(arm) > 1)
             {
+
                 arm = arm/arm;
             }
             robot.armMotor.setPower(.5);
             if(!(isOutOfBounds_Up() || isOutOfBounds_Down()))
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+((int)(arm*100)));
             else if(isOutOfBounds_Up())
-                robot.armMotor.setTargetPosition(-390);
+                robot.armMotor.setTargetPosition(-399);
             else if(isOutOfBounds_Down())
-                robot.armMotor.setTargetPosition(10);
+                robot.armMotor.setTargetPosition(1);
             else
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
-
-            /*try
-            {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-            }
-            catch(Exception Ex)
-            {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
-            }
-            finally
-            {
-                if (robot.armMotor.getCurrentPosition() == -400 || robot.armMotor.getCurrentPosition() == 1)
-                    robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
-            }*/
-            /*if((robot.armMotor.getCurrentPosition() == 600))
-            {
-                robot.armMotor.setPower(-1);
-                try{Thread.sleep(40);}catch (Exception e){}
-                robot.armMotor.setPower(0);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            else
-            {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(gamepad2.left_stick_y*100));
-                robot.armMotor.setPower(.5);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }*/
-
+            
+            //Throws ball using x-button on gamepad 2
             try
             {
                 if(gamepad2.x)
                 {
-                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION;
                     robot.armMotor.setPower(1);
-                    robot.armMotor.setMaxSpeed(4000);
                     robot.armMotor.setTargetPosition(-370);
-
-                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    /*try {
-                        Thread.sleep(500);
-                    } catch (Exception e) {
-                    }*/
-                    //robot.armMotor.setTargetPosition(0);
-                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                    //robot.armMotor.setPower(0);
-                    //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
             }
             catch(Exception Ex){
@@ -272,11 +245,6 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
 
             // robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
             //robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
-
-            // Use the left stick on controller 2 to move the arm
-
-            //robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstantsWithEncoder.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstantsWithEncoder.CLAW_SPEED_MULT * gamepad2.right_stick_y));
 
 
             // Send telemetry message to signify robot running
