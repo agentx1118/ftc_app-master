@@ -57,6 +57,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 @Disabled
 public class ZackOpModeArmWithEncoder extends LinearOpMode {
 
+    private double arm;
+
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
     // allow additional objects (such as the arm's servo) to be added
@@ -130,12 +132,79 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
         robot.leftMotor.setPower(left + OpModeConstantsWithEncoder.LEFT_MOTOR_OFFSET);
         robot.rightMotor.setPower(right - OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
+
+    private void updateArm()
+    {
+        boolean isNorm = true;
+        robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+        robot.armMotor.setPower(.5);
+        if(Math.abs(arm) > 1)
+        {
+            arm = arm/arm;
+        }
+        if((robot.armMotor.getCurrentPosition() > 450) && !isNorm)
+        {
+            robot.armMotor.setPower(-1);
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-20);
+            //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        else if(robot.armMotor.getCurrentPosition() < 20 && !isNorm)
+        {
+            robot.armMotor.setPower(1);
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+20);
+
+        }
+        else
+        {
+            robot.armMotor.setPower(.1);
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(-gamepad2.left_stick_y*10));
+
+            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        robot.armMotor.setPower(0);
+
+        if(gamepad2.x && !isNorm) {
+                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.armMotor.setMaxSpeed(3000);
+                robot.armMotor.setPower(-.025);
+                robot.armMotor.setTargetPosition(180);
+                while(robot.armMotor.getCurrentPosition() > 20)
+                {
+                    robot.armMotor.setPower(-.025);
+                }*/
+            robot.armMotor.setMaxSpeed(4000);
+            robot.armMotor.setPower(1);
+            robot.armMotor.setTargetPosition(450);
+
+            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if(gamepad2.y && !isNorm) {
+                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.armMotor.setMaxSpeed(3000);
+                robot.armMotor.setPower(-.025);
+                robot.armMotor.setTargetPosition(180);
+                while(robot.armMotor.getCurrentPosition() > 20)
+                {
+                    robot.armMotor.setPower(-.025);
+                }*/
+            robot.armMotor.setMaxSpeed(4000);
+            robot.armMotor.setPower(-1);
+            robot.armMotor.setTargetPosition(0);
+
+            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if(isNorm)
+        {
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.armMotor.setPower(arm/4);
+        }
+    }
+
     @Override
     public void runOpMode() {
         double left;
         double right;
         double max;
-        double arm;
         double newArmPos;
 
         /* Initialize the hardware variables.
@@ -187,73 +256,79 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             // clawOffset += CLAW_SPEED;
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
-            boolean isNorm = true;
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-            robot.armMotor.setPower(.5);
-            if(Math.abs(arm) > 1)
-            {
-                arm = arm/arm;
-            }
-            if((robot.armMotor.getCurrentPosition() > 450) && !isNorm)
-            {
-                robot.armMotor.setPower(-1);
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-20);
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            else if(robot.armMotor.getCurrentPosition() < 20 && !isNorm)
-            {
-                robot.armMotor.setPower(1);
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+20);
 
-            }
-            else
-            {
-                robot.armMotor.setPower(.1);
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(-gamepad2.left_stick_y*10));
+            updateArm();
 
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            robot.armMotor.setPower(0);
+            // Moved to updateArm()
 
-            if(gamepad2.x && !isNorm) {
-                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(3000);
-                robot.armMotor.setPower(-.025);
-                robot.armMotor.setTargetPosition(180);
-                while(robot.armMotor.getCurrentPosition() > 20)
-                {
-                    robot.armMotor.setPower(-.025);
-                }*/
-                robot.armMotor.setMaxSpeed(4000);
-                robot.armMotor.setPower(1);
-                robot.armMotor.setTargetPosition(450);
-
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(gamepad2.y && !isNorm) {
-                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(3000);
-                robot.armMotor.setPower(-.025);
-                robot.armMotor.setTargetPosition(180);
-                while(robot.armMotor.getCurrentPosition() > 20)
-                {
-                    robot.armMotor.setPower(-.025);
-                }*/
-                robot.armMotor.setMaxSpeed(4000);
-                robot.armMotor.setPower(-1);
-                robot.armMotor.setTargetPosition(0);
-
-                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(isNorm)
-            {
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.armMotor.setPower(arm/4);
-            }
-            /*if(gamepad2.y)
-            {
-                isNorm = !isNorm;
-            }*/
+//            boolean isNorm = true;
+//            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
+//            robot.armMotor.setPower(.5);
+//            if(Math.abs(arm) > 1)
+//            {
+//                arm = arm/arm;
+//            }
+//            if((robot.armMotor.getCurrentPosition() > 450) && !isNorm)
+//            {
+//                robot.armMotor.setPower(-1);
+//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-20);
+//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            }
+//            else if(robot.armMotor.getCurrentPosition() < 20 && !isNorm)
+//            {
+//                robot.armMotor.setPower(1);
+//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+20);
+//
+//            }
+//            else
+//            {
+//                robot.armMotor.setPower(.1);
+//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(-gamepad2.left_stick_y*10));
+//
+//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//            robot.armMotor.setPower(0);
+//
+//            if(gamepad2.x && !isNorm) {
+//                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                robot.armMotor.setMaxSpeed(3000);
+//                robot.armMotor.setPower(-.025);
+//                robot.armMotor.setTargetPosition(180);
+//                while(robot.armMotor.getCurrentPosition() > 20)
+//                {
+//                    robot.armMotor.setPower(-.025);
+//                }*/
+//                robot.armMotor.setMaxSpeed(4000);
+//                robot.armMotor.setPower(1);
+//                robot.armMotor.setTargetPosition(450);
+//
+//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//            if(gamepad2.y && !isNorm) {
+//                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                robot.armMotor.setMaxSpeed(3000);
+//                robot.armMotor.setPower(-.025);
+//                robot.armMotor.setTargetPosition(180);
+//                while(robot.armMotor.getCurrentPosition() > 20)
+//                {
+//                    robot.armMotor.setPower(-.025);
+//                }*/
+//                robot.armMotor.setMaxSpeed(4000);
+//                robot.armMotor.setPower(-1);
+//                robot.armMotor.setTargetPosition(0);
+//
+//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//            if(isNorm)
+//            {
+//                robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                robot.armMotor.setPower(arm/4);
+//            }
+//            */
+//            /*if(gamepad2.y)
+//            {
+//                isNorm = !isNorm;
+//            }*/
 
 
 
