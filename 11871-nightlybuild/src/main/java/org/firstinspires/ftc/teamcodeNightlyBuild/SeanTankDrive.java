@@ -151,6 +151,10 @@ public class SeanTankDrive extends LinearOpMode{
         robot.rightMotor.setPower(right - OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
+    private void scoop()
+    {
+        robot.scoopServo.setPosition(1);
+    }
 
     @Override
     public void runOpMode()
@@ -192,11 +196,23 @@ public class SeanTankDrive extends LinearOpMode{
             //robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
             //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
 
-            updateArm();
-
+            //updateArm();
+            /*int scoopcounter = 0;
+            if(gamepad2.a)
+            {
+                scoop();
+            }
+            if(robot.scoopServo.getPosition() == 1)
+            {
+                scoopcounter++;
+            }
+            if(scoopcounter == 100)
+                robot.scoopServo.setPosition(0);*/
+            robot.scoopServo.setPosition(robot.scoopServo.getPosition()+gamepad2.right_stick_y*0.05);
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
-            telemetry.addData("arm_servo", "%.2f", gamepad2.y);
+            telemetry.addData("arm_servo", "%.2f", gamepad2.left_stick_y);
+            telemetry.addData("scoop_motor", "%.2f", robot.scoopServo.getPosition());
             telemetry.update();
             // Potential method of switching controllers in an emergency?
 

@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcodeNightlyBuild;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Sean on 2/21/2017.
  */
-
+//Class not needed currently
 @Autonomous(name="Voltron Arm Test: Not intended as an actual OpMode, use with caution", group = "Pushbot")
-//@Disabled
+@Disabled
 public class ArmRangeTest extends LinearOpMode{
 
     HardwarePushbot_VoltronConfig robot = new HardwarePushbot_VoltronConfig();

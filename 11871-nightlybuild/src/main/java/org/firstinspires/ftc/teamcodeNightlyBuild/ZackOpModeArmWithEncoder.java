@@ -53,8 +53,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="ArmEncoder", group="Pushbot")
-@Disabled
+@TeleOp(name = "Arm Encoder", group = "South")
+//@Disabled
 public class ZackOpModeArmWithEncoder extends LinearOpMode {
 
     private double arm;
@@ -200,6 +200,11 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
         }
     }
 
+    private void scoop()
+    {
+        robot.scoopServo.setPosition(1);
+    }
+
     @Override
     public void runOpMode() {
         double left;
@@ -258,79 +263,11 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             // clawOffset -= CLAW_SPEED;
 
             updateArm();
-
-            // Moved to updateArm()
-
-//            boolean isNorm = true;
-//            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-//            robot.armMotor.setPower(.5);
-//            if(Math.abs(arm) > 1)
-//            {
-//                arm = arm/arm;
-//            }
-//            if((robot.armMotor.getCurrentPosition() > 450) && !isNorm)
-//            {
-//                robot.armMotor.setPower(-1);
-//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-20);
-//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            }
-//            else if(robot.armMotor.getCurrentPosition() < 20 && !isNorm)
-//            {
-//                robot.armMotor.setPower(1);
-//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+20);
-//
-//            }
-//            else
-//            {
-//                robot.armMotor.setPower(.1);
-//                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(-gamepad2.left_stick_y*10));
-//
-//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            }
-//            robot.armMotor.setPower(0);
-//
-//            if(gamepad2.x && !isNorm) {
-//                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                robot.armMotor.setMaxSpeed(3000);
-//                robot.armMotor.setPower(-.025);
-//                robot.armMotor.setTargetPosition(180);
-//                while(robot.armMotor.getCurrentPosition() > 20)
-//                {
-//                    robot.armMotor.setPower(-.025);
-//                }*/
-//                robot.armMotor.setMaxSpeed(4000);
-//                robot.armMotor.setPower(1);
-//                robot.armMotor.setTargetPosition(450);
-//
-//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            }
-//            if(gamepad2.y && !isNorm) {
-//                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                robot.armMotor.setMaxSpeed(3000);
-//                robot.armMotor.setPower(-.025);
-//                robot.armMotor.setTargetPosition(180);
-//                while(robot.armMotor.getCurrentPosition() > 20)
-//                {
-//                    robot.armMotor.setPower(-.025);
-//                }*/
-//                robot.armMotor.setMaxSpeed(4000);
-//                robot.armMotor.setPower(-1);
-//                robot.armMotor.setTargetPosition(0);
-//
-//                //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            }
-//            if(isNorm)
-//            {
-//                robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                robot.armMotor.setPower(arm/4);
-//            }
-//            */
-//            /*if(gamepad2.y)
-//            {
-//                isNorm = !isNorm;
-//            }*/
-
-
+            if(gamepad2.a)
+            {
+                scoop();
+                robot.scoopServo.setPosition(0);
+            }
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
             //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
