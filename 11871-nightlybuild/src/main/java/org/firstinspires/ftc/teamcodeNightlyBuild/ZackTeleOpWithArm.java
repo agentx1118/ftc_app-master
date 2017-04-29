@@ -55,9 +55,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @TeleOp(name = "Arm Encoder", group = "South")
 //@Disabled
-public class ZackOpModeArmWithEncoder extends LinearOpMode {
-
-    private double arm;
+public class ZackTeleOpWithArm extends LinearOpMode {
 
     /* Declare OpMode members. */
     //Changed from original HardwarePushbot class in order to preserve original class and still
@@ -133,71 +131,66 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
         robot.rightMotor.setPower(right - OpModeConstantsWithEncoder.RIGHT_MOTOR_OFFSET);
     }
 
-    private void updateArm()
+    private double increment = degreesToEncoder(25);
+    private int    max       = degreesToEncoder(-120);
+    private int    min       = degreesToEncoder(0);
+
+    private void updateArm(double arm)
     {
-        boolean isNorm = true;
-        robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(arm*100));
-        robot.armMotor.setPower(.5);
         if(Math.abs(arm) > 1)
         {
+
             arm = arm/arm;
         }
-        if((robot.armMotor.getCurrentPosition() > 450) && !isNorm)
-        {
-            robot.armMotor.setPower(-1);
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-20);
-            //robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        else if(robot.armMotor.getCurrentPosition() < 20 && !isNorm)
-        {
-            robot.armMotor.setPower(1);
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+20);
-
-        }
+        robot.armMotor.setPower(.5);
+        if(!(isOutOfBounds_Up() || isOutOfBounds_Down()))
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+((int)(arm*increment)));
+        else if(isOutOfBounds_Up())
+            robot.armMotor.setTargetPosition(max+1);
+        else if(isOutOfBounds_Down())
+            robot.armMotor.setTargetPosition(min-1);
         else
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+
+        //Throws ball using x-button on gamepad 2
+        try
         {
-            robot.armMotor.setPower(.1);
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+(int)(-gamepad2.left_stick_y*10));
-
-            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if(gamepad2.x)
+            {
+                robot.armMotor.setPower(1);
+                robot.armMotor.setTargetPosition(degreesToEncoder(95));
+            }
         }
-        robot.armMotor.setPower(0);
-
-        if(gamepad2.x && !isNorm) {
-                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(3000);
-                robot.armMotor.setPower(-.025);
-                robot.armMotor.setTargetPosition(180);
-                while(robot.armMotor.getCurrentPosition() > 20)
-                {
-                    robot.armMotor.setPower(-.025);
-                }*/
-            robot.armMotor.setMaxSpeed(4000);
-            robot.armMotor.setPower(1);
-            robot.armMotor.setTargetPosition(450);
-
-            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        catch(Exception Ex){
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
         }
-        if(gamepad2.y && !isNorm) {
-                /*robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setMaxSpeed(3000);
-                robot.armMotor.setPower(-.025);
-                robot.armMotor.setTargetPosition(180);
-                while(robot.armMotor.getCurrentPosition() > 20)
-                {
-                    robot.armMotor.setPower(-.025);
-                }*/
-            robot.armMotor.setMaxSpeed(4000);
-            robot.armMotor.setPower(-1);
-            robot.armMotor.setTargetPosition(0);
+        finally{
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+        }
+    }
 
-            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        if(isNorm)
-        {
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.armMotor.setPower(arm/4);
-        }
+    private boolean isOutOfBounds_Up()
+    {
+        if(robot.armMotor.getCurrentPosition() < max)
+            return true;
+        return false;
+    }
+
+    private boolean isOutOfBounds_Down()
+    {
+        if(robot.armMotor.getCurrentPosition() > min)
+            return true;
+        return false;
+    }
+
+    private int encoderToDegrees(int enc)
+    {
+        return(enc/4);
+    }
+
+    private int degreesToEncoder(int deg)
+    {
+        return(deg*4);
     }
 
     private void scoop()
@@ -210,7 +203,7 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
         double left;
         double right;
         double max;
-        double newArmPos;
+        double arm;
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -262,7 +255,7 @@ public class ZackOpModeArmWithEncoder extends LinearOpMode {
             //else if (gamepad1.left_bumper)
             // clawOffset -= CLAW_SPEED;
 
-            updateArm();
+            updateArm(arm);
             if(gamepad2.a)
             {
                 scoop();
