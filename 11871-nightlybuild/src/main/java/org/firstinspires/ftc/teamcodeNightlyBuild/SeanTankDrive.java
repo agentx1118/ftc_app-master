@@ -19,11 +19,13 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 //@Disabled
 public class SeanTankDrive extends LinearOpMode{
     HardwarePushbot_VoltronConfigEncoder robot = new HardwarePushbot_VoltronConfigEncoder();
+    private double increment    = degreesToEncoder(-10);
+    private double arm_Power    = 1.0;
+    private int    max          = degreesToEncoder(170);
+    private int    min          = degreesToEncoder(0);
+    private int    scoopcounter = 0;
 
-    private double increment = degreesToEncoder(25);
-    private int    max       = degreesToEncoder(-120);
-    private int    min       = degreesToEncoder(0);
-
+    //Arm movement and throwing mechanism
     private void updateArm(double arm)
     {
         if(Math.abs(arm) > 1)
@@ -31,15 +33,24 @@ public class SeanTankDrive extends LinearOpMode{
 
             arm = arm/arm;
         }
-        robot.armMotor.setPower(.5);
-        if(!(isOutOfBounds_Up() || isOutOfBounds_Down()))
-            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+((int)(arm*increment)));
-        else if(isOutOfBounds_Up())
-            robot.armMotor.setTargetPosition(max+1);
-        else if(isOutOfBounds_Down())
-            robot.armMotor.setTargetPosition(min-1);
-        else
+
+        if(!(isOutOfBounds_Up() || isOutOfBounds_Down()) && gamepad2.left_stick_y != 0) {
+            robot.armMotor.setPower(arm_Power);
+            robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition() + ((int)
+                    (arm * increment)));
+        }
+        else if(isOutOfBounds_Up()){
+            robot.armMotor.setPower(arm_Power);
+            robot.armMotor.setTargetPosition(max-degreesToEncoder(5));
+        }
+        else if(isOutOfBounds_Down()) {
+            robot.armMotor.setPower(arm_Power);
+            robot.armMotor.setTargetPosition(min + degreesToEncoder(5));
+        }
+        else {
+            robot.armMotor.setPower(0);
             robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+        }
 
         //Throws ball using x-button on gamepad 2
         try
@@ -58,20 +69,23 @@ public class SeanTankDrive extends LinearOpMode{
         }
     }
 
+    //Checks if the arm is lower than the max position
     private boolean isOutOfBounds_Up()
     {
-        if(robot.armMotor.getCurrentPosition() < max)
+        if(robot.armMotor.getCurrentPosition() > max)
             return true;
         return false;
     }
 
+    //Checks if the arm is higher than the minimum position
     private boolean isOutOfBounds_Down()
     {
-        if(robot.armMotor.getCurrentPosition() > min)
+        if(robot.armMotor.getCurrentPosition() < min)
             return true;
         return false;
     }
 
+    //Code to convert between the arm position values and degrees
     private int encoderToDegrees(int enc)
     {
         return(enc/4);
@@ -144,6 +158,7 @@ public class SeanTankDrive extends LinearOpMode{
         robot.rightMotor.setPower(right - OpModeConstants.RIGHT_MOTOR_OFFSET);
     }
 
+    //Move the scoop to the max position
     private void scoop()
     {
         robot.scoopServo.setPosition(1);
@@ -166,13 +181,16 @@ public class SeanTankDrive extends LinearOpMode{
 
         while(opModeIsActive())
         {
+            //Moving the wheels using the left and right stick of gamepad 1
             right = -gamepad1.right_stick_y * OpModeConstants.SPEED_MULT;
             left = -gamepad1.left_stick_y * OpModeConstants.SPEED_MULT;
 
             arm = gamepad2.left_stick_y;
 
-            double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) : (OpModeConstants.LEFT_MOTOR_OFFSET);
-            double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) : (OpModeConstants.RIGHT_MOTOR_OFFSET);
+            double lOffset = (left < 0.0) ? (-OpModeConstants.LEFT_MOTOR_OFFSET) :
+                    (OpModeConstants.LEFT_MOTOR_OFFSET);
+            double rOffset = (right < 0.0) ? (-OpModeConstants.RIGHT_MOTOR_OFFSET) :
+                    (OpModeConstants.RIGHT_MOTOR_OFFSET);
             left += lOffset;
             right += rOffset;
             max = Math.max(Math.abs(left), Math.abs(right));
@@ -185,12 +203,10 @@ public class SeanTankDrive extends LinearOpMode{
             robot.leftMotor.setPower(left);
             robot.rightMotor.setPower(right);
 
-
-            //robot.armServo.setPosition(robot.armServo.getPosition() + (OpModeConstants.ARM_SPEED_MULT * gamepad2.left_stick_y));
-            //robot.clawServo.setPosition(robot.clawServo.getPosition() + (OpModeConstants.CLAW_SPEED_MULT * gamepad2.right_stick_y));
-
+            //Move the arm
             updateArm(arm);
-            /*int scoopcounter = 0;
+
+            //Move the scoop for 100 counts
             if(gamepad2.a)
             {
                 scoop();
@@ -199,22 +215,24 @@ public class SeanTankDrive extends LinearOpMode{
             {
                 scoopcounter++;
             }
-            if(scoopcounter == 100)
-                robot.scoopServo.setPosition(0);*/
-            robot.scoopServo.setPosition(robot.scoopServo.getPosition()+gamepad2.right_stick_y*0.05);
+            if(scoopcounter == 100) {
+                robot.scoopServo.setPosition(0);
+                scoopcounter = 0;
+            }
+
+            //Move the arm using the right joystick of gamepad 2
+            if(gamepad2.right_stick_y != 0) {
+                robot.scoopServo.setPosition(robot.scoopServo.getPosition()
+                        + gamepad2.right_stick_y * 0.05);
+                scoopcounter = 0;
+            }
+
+            //Sends data to the phone about the robot
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
             telemetry.addData("arm_servo", "%.2f", gamepad2.left_stick_y);
-            telemetry.addData("scoop_motor", "%.2f", robot.scoopServo.getPosition());
+            telemetry.addData("scoop_motor", "%.2f", robot.armMotor.getCurrentPosition());
             telemetry.update();
-            // Potential method of switching controllers in an emergency?
-
-            /*if(gamepad2.back)
-            {
-                Gamepad temp = gamepad1;
-                gamepad1 = gamepad2;
-                gamepad2 = temp;
-            }*/
             robot.waitForTick(40);
         }
     }
