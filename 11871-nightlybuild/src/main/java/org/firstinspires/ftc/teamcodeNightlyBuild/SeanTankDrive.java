@@ -231,7 +231,7 @@ public class SeanTankDrive extends LinearOpMode{
             telemetry.addData("left_drive", "%2f", left);
             telemetry.addData("right_drive", "%2f", right);
             telemetry.addData("arm_servo", "%.2f", gamepad2.left_stick_y);
-            telemetry.addData("scoop_motor", "%.2f", robot.armMotor.getCurrentPosition());
+            telemetry.addData("scoop_motor", "%d", robot.armMotor.getCurrentPosition());
             telemetry.update();
             robot.waitForTick(40);
         }

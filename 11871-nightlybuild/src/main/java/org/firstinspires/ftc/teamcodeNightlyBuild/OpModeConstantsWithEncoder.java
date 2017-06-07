@@ -8,7 +8,7 @@ public class OpModeConstantsWithEncoder
 {
     public static final double RIGHT_MOTOR_OFFSET = 0.0;   // The speed offset of the right motor
     public static final double LEFT_MOTOR_OFFSET = 0.0;    // The speed offset of the left motor
-    public static final double SPEED_MULT = -0.6;          // Multiplier for the speed of both drive motors
+    public static final double SPEED_MULT = 0.6;          // Multiplier for the speed of both drive motors
     public static final double AUTO_SPEED_FACTOR = 3;      // Multiplier for AUTO_SPEED_MULTIPLIER
     public static final double AUTO_SPEED_MULT =           // Multiplier for the speed of both drive motors during autonomous
         (SPEED_MULT*AUTO_SPEED_FACTOR > 1) ? 1 : SPEED_MULT*AUTO_SPEED_FACTOR;
